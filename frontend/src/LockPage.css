@@ -1,0 +1,49 @@
+.lockPage {
+  height: 100%;
+  background-image: url("./assets/lock-page-bg.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lockPageContainer {
+  height: 350px;
+  width: 350px;
+  background-color: white;
+  opacity: 0.7;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (max-width: 400px) {
+  .lockPageContainer {
+    height: 300px;
+    width: 300px;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .lockPageContainer {
+    height: 280px;
+    width: 280px;
+  }
+}
+
+.lockPageTitle {
+  color: black;
+  display: inline-block;
+  font-family: Courgette;
+  font-size: 28;
+}
+
+.enterButton {
+  color: white;
+  font-size: 20;
+  background-color: #7e78ec;
+  font-family: Roboto;
+  width: 100%;
+}

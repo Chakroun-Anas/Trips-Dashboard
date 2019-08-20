@@ -1,0 +1,19 @@
+.navbar {
+  min-width: 550px;
+}
+
+.navbar-brand {
+  color: white !important;
+  font-family: "Courgette" !important;
+  margin-left: 20px;
+}
+
+.navbar-brand span {
+  display: inline-block;
+}
+
+.navbar-brand span:nth-child(2) {
+  margin-left: 5px;
+  position: relative;
+  top: 3px;
+}

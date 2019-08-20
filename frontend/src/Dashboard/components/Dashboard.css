@@ -1,0 +1,52 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-column-gap: 25px;
+  grid-row-gap: 25px;
+  min-width: 500px;
+  width: 100vw;
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard {
+    grid-template-columns: 100%;
+  }
+}
+
+.widget {
+  border-radius: 5px;
+  background-color: white;
+}
+
+.react-calendar {
+  width: unset;
+}
+
+.react-calendar__tile {
+  outline: none !important;
+}
+
+.react-calendar__tile--active {
+  border-radius: 5px;
+  background: #7e78ec !important;
+}
+
+.g-gtitle text {
+  font-family: "Courgette" !important;
+  font-size: 1.25rem !important;
+}
+
+.highlightFirstDay div.react-calendar__month-view__days > button:nth-child(3) {
+  outline: none !important;
+  border-radius: 5px;
+  background: #7e78ec !important;
+  color: white;
+}
+
+.map {
+  min-width: 400px;
+}
+
+.main-svg {
+  border-radius: 5px;
+}
