@@ -1,7 +1,7 @@
 ## Description
 
 This mini project is a demonstration of my skills as a full stack javascript developer, it's a web application that
-consists of a frontend part developed with React and a backend part developed with Node.js
+consists of a frontend part developed with React.js and a backend part developed with Node.js (Typescript) while implementing a clean architecture.
 
 ## The Idea
 
@@ -21,30 +21,25 @@ The frontend part contains two pages:
 
 ## Backend
 
-The backend applications consists of two main parts:
+The backend expose multiple services while implementing a clean architecture, it consists of the following parts:
 
-1. Database generator
-2. Web services that the frontend application consumes
+1. data: Input and Output data
+2. domain: Domain entities and errors type definitions
+3. infrastructure: Components that the application rely on in order to function (Persistance, Gateways, Mailing, etc)
+4. rest: Controllers
+5. usecase: Interactors that implements different bushiness rules
 
-## Requirements:
+When running the backend, they are two choices, running the application using an in memory implementation or a database
+implementation by toggling PERSISTANCE_TYPE variable in the .env file.
+
+## Requirements
 
 In order to run the application, the following elements are required:
 
 - Node.js
-- MongoDB
-- Google map API key: [Get an API Key | Maps JavaScript]
+- MongoDB (Optional)
 
 ## Run the application
-
-### Generate the database
-
-Ensure that mongodb is installed locally and the database is accessible by the default port: 27017 then execute the following commands:
-
-- cd backend
-- npm install
-- node database/generator.js
-
-This will result on the creation of database called travels, a collection called travelers with 310000 documents.
 
 ### Run the backend
 
@@ -52,11 +47,9 @@ Execute the following commands:
 
 - cd backend
 - npm install
-- node index.js
+- npm run start
 
 ### Run the frontend
-
-Set googleMapApiKey property in frontend/config.json then execute the following commands:
 
 - cd frontend
 - npm install

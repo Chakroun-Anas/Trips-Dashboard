@@ -14,35 +14,35 @@ const config = require("../../config.json");
 
 const destinations = [
   {
-    countryName: "France",
+    countryName: "FRANCE",
     markerPosition: {
       lat: 47.431225,
       lng: 1.962765
     }
   },
   {
-    countryName: "Egypt",
+    countryName: "EGYPT",
     markerPosition: {
       lat: 27.103921,
       lng: 29.073204
     }
   },
   {
-    countryName: "Japan",
+    countryName: "JAPAN",
     markerPosition: {
       lat: 36.122138,
       lng: 138.561406
     }
   },
   {
-    countryName: "Russia",
+    countryName: "RUSSIA",
     markerPosition: {
       lat: 55.086109,
       lng: 38.826584
     }
   },
   {
-    countryName: "Turkey",
+    countryName: "TURKEY",
     markerPosition: {
       lat: 39.183919,
       lng: 35.281361
@@ -58,7 +58,7 @@ class MapContent extends React.Component {
         lat: 47.431225,
         lng: 1.962765
       },
-      currentCountry: "France",
+      currentCountry: "FRANCE",
       draggable: true,
       mapLoaded: false,
       showSecondGuide: false,
@@ -68,100 +68,102 @@ class MapContent extends React.Component {
 
   render() {
     const { draggable, center, mapLoaded, currentCountry } = this.state;
-    const { countriesVisitorsPerDay } = this.props;
+    const { countriesTotalVisitors } = this.props;
     return (
       <div style={{ marginTop: 60 }}>
-        <GoogleMap
-          center={center}
-          defaultZoom={4}
-          options={{
-            styles: [
-              {
-                featureType: "administrative.country",
-                stylers: [{ visibility: "off" }]
-              }
-            ],
-            mapTypeId: google.maps.MapTypeId.HYBRID,
-            draggable,
-            scrollwheel: false
-            // zoomControl: false
-          }}
-          onTilesLoaded={() => {
-            if (!mapLoaded) {
-              this.setState({
-                mapLoaded: true
-              });
-            }
-          }}
-        >
-          <FusionTablesLayer
-            url="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml"
+        {countriesTotalVisitors && (
+          <GoogleMap
+            center={center}
+            defaultZoom={4}
             options={{
-              query: {
-                select: "geometry",
-                from: "1S4aLkBE5u_WS0WMVSchhBgMLdAARuPEjyW4rs20"
-              },
               styles: [
                 {
-                  polylineOptions: {
-                    strokeColor: "#333333",
-                    strokeWeight: 2
-                  }
+                  featureType: "administrative.country",
+                  stylers: [{ visibility: "off" }]
                 }
-              ]
+              ],
+              mapTypeId: google.maps.MapTypeId.HYBRID,
+              draggable,
+              scrollwheel: false
+              // zoomControl: false
             }}
-          />
-          {destinations.map(destination => {
-            return (
-              <React.Fragment key={destination.countryName}>
-                <MarkerWithLabel
-                  icon={{
-                    url:
-                      currentCountry === destination.countryName
-                        ? "https://image.ibb.co/ebS9yA/green-circle.png"
-                        : "https://image.ibb.co/bPARvq/red-circle.png",
-                    scaledSize: new google.maps.Size(40, 40)
-                  }}
-                  position={destination.markerPosition}
-                  labelAnchor={new google.maps.Point(12, 28)}
-                  labelStyle={{
-                    color: "white",
-                    fontSize: "15px",
-                    fontFamily: "Cougette"
-                  }}
-                  onClick={() => {
-                    this.setState(
-                      {
-                        currentCountry: destination.countryName
-                      },
-                      () => {
-                        this.props.changeCountry(destination.countryName);
-                      }
-                    );
-                  }}
-                >
-                  <span>
-                    {countriesVisitorsPerDay[destination.countryName]}
-                  </span>
-                </MarkerWithLabel>
-                <MarkerWithLabel
-                  icon={{
-                    url: ""
-                  }}
-                  position={destination.markerPosition}
-                  labelAnchor={new google.maps.Point(20, -5)}
-                  labelStyle={{
-                    color: "white",
-                    fontSize: "15px",
-                    fontFamily: "Cougette"
-                  }}
-                >
-                  <span>{destination.countryName}</span>
-                </MarkerWithLabel>
-              </React.Fragment>
-            );
-          })}
-        </GoogleMap>
+            onTilesLoaded={() => {
+              if (!mapLoaded) {
+                this.setState({
+                  mapLoaded: true
+                });
+              }
+            }}
+          >
+            <FusionTablesLayer
+              url="http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml"
+              options={{
+                query: {
+                  select: "geometry",
+                  from: "1S4aLkBE5u_WS0WMVSchhBgMLdAARuPEjyW4rs20"
+                },
+                styles: [
+                  {
+                    polylineOptions: {
+                      strokeColor: "#333333",
+                      strokeWeight: 2
+                    }
+                  }
+                ]
+              }}
+            />
+            {destinations.map(destination => {
+              return (
+                <React.Fragment key={destination.countryName}>
+                  <MarkerWithLabel
+                    icon={{
+                      url:
+                        currentCountry === destination.countryName
+                          ? "https://image.ibb.co/ebS9yA/green-circle.png"
+                          : "https://image.ibb.co/bPARvq/red-circle.png",
+                      scaledSize: new google.maps.Size(40, 40)
+                    }}
+                    position={destination.markerPosition}
+                    labelAnchor={new google.maps.Point(12, 28)}
+                    labelStyle={{
+                      color: "white",
+                      fontSize: "15px",
+                      fontFamily: "Cougette"
+                    }}
+                    onClick={() => {
+                      this.setState(
+                        {
+                          currentCountry: destination.countryName
+                        },
+                        () => {
+                          this.props.changeCountry(destination.countryName);
+                        }
+                      );
+                    }}
+                  >
+                    <span>
+                      {countriesTotalVisitors[destination.countryName]}
+                    </span>
+                  </MarkerWithLabel>
+                  <MarkerWithLabel
+                    icon={{
+                      url: ""
+                    }}
+                    position={destination.markerPosition}
+                    labelAnchor={new google.maps.Point(20, -5)}
+                    labelStyle={{
+                      color: "white",
+                      fontSize: "15px",
+                      fontFamily: "Cougette"
+                    }}
+                  >
+                    <span>{destination.countryName}</span>
+                  </MarkerWithLabel>
+                </React.Fragment>
+              );
+            })}
+          </GoogleMap>
+        )}
       </div>
     );
   }

@@ -8,21 +8,23 @@ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      countriesVisitorsPerDay: {},
-      nbrOfVisitorsByNationality: {},
-      percentageOfGenders: {},
-      nbrOfPeopleWithinAgeRange: {},
-      currentCountry: "France",
+      showDashboard: false,
+      countriesTotalVisitors: null,
+      countriesTotalVisitorsByAgeRange: null,
+      countriesTotalVisitorsByNationality: null,
+      countriesTotalVisitorsByGender: null,
+      currentCountry: "FRANCE",
       currentDay: 1,
       windowWidth: window.innerWidth
     };
   }
 
   componentDidMount() {
-    this.countriesVisitorsPerDay(1);
-    this.nbrOfVisitorsByNationality(1, "France");
-    this.percentageOfGenders(1, "France");
-    this.nbrOfPeopleWithinAgeRange(1, "France");
+    const initialDate = "07-01-2020";
+    this.countriesTotalVisitors(initialDate);
+    this.countriesTotalVisitorsByAgeRange(initialDate);
+    this.countriesTotalVisitorsByNationality(initialDate);
+    this.countriesTotalVisitorsByGender(initialDate);
     window.addEventListener("resize", this.handleWindowResize);
   }
 
@@ -32,77 +34,43 @@ class Dashboard extends Component {
     });
   };
 
-  countriesVisitorsPerDay(day) {
-    console.log(`🥴: Dashboard -> countriesVisitorsPerDay -> day`, day);
-    fetch("http://localhost:3004/countries-visitors-per-day", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        day: `${day < 10 ? "0" : ""}${day}`
-      })
-    }).then(response => {
-      response.json().then(countriesVisitorsPerDay => {
+  countriesTotalVisitors(date) {
+    fetch(`http://localhost:3004/travels/${date}`).then(response => {
+      response.json().then(countriesTotalVisitors => {
         this.setState({
-          countriesVisitorsPerDay
+          countriesTotalVisitors
         });
       });
     });
   }
 
-  nbrOfVisitorsByNationality(day, country) {
-    fetch("http://localhost:3004/nbr-of-visitors-by-nationality", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        day: `${day < 10 ? "0" : ""}${day}`,
-        country
-      })
-    }).then(response => {
-      response.json().then(nbrOfVisitorsByNationality => {
+  countriesTotalVisitorsByAgeRange(date) {
+    fetch(`http://localhost:3004/travels/${date}/ageRanges`).then(response => {
+      response.json().then(countriesTotalVisitorsByAgeRange => {
         this.setState({
-          nbrOfVisitorsByNationality
+          countriesTotalVisitorsByAgeRange
         });
       });
     });
   }
 
-  percentageOfGenders(day, country) {
-    fetch("http://192.168.1.7:3004/percentage-of-genders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        day: `${day < 10 ? "0" : ""}${day}`,
-        country
-      })
-    }).then(response => {
-      response.json().then(percentageOfGenders => {
-        this.setState({
-          percentageOfGenders
+  countriesTotalVisitorsByNationality(date) {
+    fetch(`http://localhost:3004/travels/${date}/nationalities/`).then(
+      response => {
+        response.json().then(countriesTotalVisitorsByNationality => {
+          this.setState({
+            countriesTotalVisitorsByNationality
+          });
         });
-      });
-    });
+      }
+    );
   }
 
-  nbrOfPeopleWithinAgeRange(day, country) {
-    fetch("http://localhost:3004/nbr-of-people-within-age-range", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify({
-        day: `${day < 10 ? "0" : ""}${day}`,
-        country
-      })
-    }).then(response => {
-      response.json().then(nbrOfPeopleWithinAgeRange => {
+  countriesTotalVisitorsByGender(date) {
+    fetch(`http://localhost:3004/travels/${date}/genders/`).then(response => {
+      response.json().then(countriesTotalVisitorsByGender => {
         this.setState({
-          nbrOfPeopleWithinAgeRange
+          countriesTotalVisitorsByGender
         });
       });
     });
@@ -129,11 +97,11 @@ class Dashboard extends Component {
   render() {
     const {
       currentDay,
-      countriesVisitorsPerDay,
-      nbrOfVisitorsByNationality,
       currentCountry,
-      percentageOfGenders,
-      nbrOfPeopleWithinAgeRange
+      countriesTotalVisitors,
+      countriesTotalVisitorsByAgeRange,
+      countriesTotalVisitorsByNationality,
+      countriesTotalVisitorsByGender
     } = this.state;
     const plotlyGraphWidth = this.plotlyGraphWidth();
     return (
@@ -159,20 +127,22 @@ class Dashboard extends Component {
             Day trips
           </h4>
           <Calendar
-            minDate={new Date(2018, 7, 1)}
-            maxDate={new Date(2018, 7, 31)}
-            activeStartDate={new Date(2018, 7, 1)}
+            minDate={new Date(2020, 6, 1)}
+            maxDate={new Date(2020, 6, 31)}
+            activeStartDate={new Date(2020, 6, 1)}
             className={`${currentDay === 1 ? "highlightFirstDay" : ""}`}
             onClickDay={date => {
+              const dateUSAFormat = `0${date.getMonth() +
+                1}-${date.getDate()}-${date.getFullYear()}`;
               this.setState(
                 {
                   currentDay: date.getDate()
                 },
                 () => {
-                  this.countriesVisitorsPerDay(currentDay);
-                  this.nbrOfVisitorsByNationality(currentDay, currentCountry);
-                  this.percentageOfGenders(currentDay, currentCountry);
-                  this.nbrOfPeopleWithinAgeRange(currentDay, currentCountry);
+                  this.countriesTotalVisitors(dateUSAFormat);
+                  this.countriesTotalVisitorsByAgeRange(dateUSAFormat);
+                  this.countriesTotalVisitorsByNationality(dateUSAFormat);
+                  this.countriesTotalVisitorsByGender(dateUSAFormat);
                 }
               );
             }}
@@ -190,89 +160,93 @@ class Dashboard extends Component {
               fontSize: "1.25rem"
             }}
           >
-            Number of trips by country in {currentDay}
-            /08/2018
+            Number of trips by country in 07-
+            {currentDay}
+            -2020
           </h4>
           <Map
-            countriesVisitorsPerDay={countriesVisitorsPerDay}
+            countriesTotalVisitors={countriesTotalVisitors}
             changeCountry={currentCountry => {
-              this.setState(
-                {
-                  currentCountry
-                },
-                () => {
-                  this.nbrOfVisitorsByNationality(currentDay, currentCountry);
-                  this.percentageOfGenders(currentDay, currentCountry);
-                  this.nbrOfPeopleWithinAgeRange(currentDay, currentCountry);
-                }
-              );
+              this.setState({
+                currentCountry
+              });
             }}
           />
         </div>
         <div className="nbrOfVisitorsByNationality">
-          <Plot
-            data={[
-              {
-                x: ["USA", "China", "Morocco", "Italy", "Spain"],
-                y: [
-                  nbrOfVisitorsByNationality["USA"],
-                  nbrOfVisitorsByNationality["China"],
-                  nbrOfVisitorsByNationality["Morocco"],
-                  nbrOfVisitorsByNationality["Italy"],
-                  nbrOfVisitorsByNationality["Spain"]
-                ],
-                marker: {
-                  color: [
-                    "rgba(0,0,0,1)",
-                    "rgba(223,188,94, 1)",
-                    "rgba(212,0,29,1)",
-                    "rgba(0,150,59,1)",
-                    "rgba(255,197,204,1)"
-                  ]
-                },
-                type: "bar"
-              }
-            ]}
-            layout={{
-              height: 400,
-              width: plotlyGraphWidth,
-              title: "Number of visitors by nationality"
-            }}
-          />
+          {countriesTotalVisitorsByNationality && (
+            <Plot
+              data={[
+                {
+                  x: ["USA", "CHINA", "MOROCCO", "ITALY", "SPAIN"],
+                  y: [
+                    countriesTotalVisitorsByNationality[currentCountry]["USA"],
+                    countriesTotalVisitorsByNationality[currentCountry][
+                      "CHINA"
+                    ],
+                    countriesTotalVisitorsByNationality[currentCountry][
+                      "MOROCCO"
+                    ],
+                    countriesTotalVisitorsByNationality[currentCountry][
+                      "ITALY"
+                    ],
+                    countriesTotalVisitorsByNationality[currentCountry]["SPAIN"]
+                  ],
+                  marker: {
+                    color: [
+                      "rgba(0,0,0,1)",
+                      "rgba(223,188,94, 1)",
+                      "rgba(212,0,29,1)",
+                      "rgba(0,150,59,1)",
+                      "rgba(255,197,204,1)"
+                    ]
+                  },
+                  type: "bar"
+                }
+              ]}
+              layout={{
+                height: 400,
+                width: plotlyGraphWidth,
+                title: "Number of visitors by nationality"
+              }}
+            />
+          )}
         </div>
         <div className="visitorsGender">
-          <Plot
-            data={[
-              {
-                values: [
-                  percentageOfGenders["males"],
-                  percentageOfGenders["females"]
-                ],
-                labels: ["Male", "Female"],
-                marker: {
-                  colors: ["#BBDEFB", "#F8BBD0"]
-                },
-                type: "pie"
-              }
-            ]}
-            layout={{
-              height: 400,
-              width: plotlyGraphWidth,
-              title: "Visitors gender"
-            }}
-          />
+          {countriesTotalVisitorsByGender && (
+            <Plot
+              data={[
+                {
+                  values: [
+                    countriesTotalVisitorsByGender[currentCountry]["MALE"],
+                    countriesTotalVisitorsByGender[currentCountry]["FEMALE"]
+                  ],
+                  labels: ["MALE", "FEMALE"],
+                  marker: {
+                    colors: ["#BBDEFB", "#F8BBD0"]
+                  },
+                  type: "pie"
+                }
+              ]}
+              layout={{
+                height: 400,
+                width: plotlyGraphWidth,
+                title: "Visitors gender"
+              }}
+            />
+          )}
         </div>
         <div className="visitorsByAgeGroup">
-          <div className="">
+          {countriesTotalVisitorsByAgeRange && (
             <Plot
               data={[
                 {
                   y: ["18-34", "35-50", "51-75", "+75"],
                   x: [
-                    nbrOfPeopleWithinAgeRange["18-34"],
-                    nbrOfPeopleWithinAgeRange["35-50"],
-                    nbrOfPeopleWithinAgeRange["51-75"],
-                    nbrOfPeopleWithinAgeRange["+75"]
+                    countriesTotalVisitorsByAgeRange[currentCountry]["18_34"],
+                    countriesTotalVisitorsByAgeRange[currentCountry]["35_50"],
+                    countriesTotalVisitorsByAgeRange[currentCountry]["51_75"],
+                    countriesTotalVisitorsByAgeRange[currentCountry]["+75"]
                   ],
                   marker: {
                     color: [
@@ -290,10 +264,10 @@ class Dashboard extends Component {
               layout={{
                 height: 400,
                 width: plotlyGraphWidth,
-                title: "Number of visitors by age group"
+                title: "Number of visitors by age range"
               }}
             />
-          </div>
+          )}
         </div>
       </div>
     );
